@@ -1,44 +1,35 @@
-use mouse_rs::Mouse;
+use std::fs::{self, File};
+use std::io::prelude::*;
+use std::os::unix::fs::PermissionsExt;
+use std::process::Command;
 use std::time::Duration;
 use tokio::time::sleep;
 
-const MOVEMENT: i32 = 1;
+const RESET_IDLE_TIME_PATH: &str = "./reset_idle_time";
 
-fn get_position(mouse: &Mouse) -> (i32, i32) {
-    let point = mouse
-        .get_position()
-        .expect("Error getting a mouse position");
+fn create_reset_bin() -> std::io::Result<()> {
+    let bytes = include_bytes!("../bin/reset_idle_time");
 
-    (point.x as i32, point.y as i32)
+    let mut file = File::create(RESET_IDLE_TIME_PATH)?;
+    file.write_all(bytes)?;
+    fs::set_permissions(RESET_IDLE_TIME_PATH, fs::Permissions::from_mode(0o777))?;
+
+    Ok(())
 }
 
-fn move_left(mouse: &Mouse) {
-    let (x, y) = get_position(&mouse);
-    let x = x - MOVEMENT;
-    println!("Moving the mouse to the left");
-    mouse.move_to(x, y).expect("Error moving mouse to the left");
-}
-
-fn move_right(mouse: &Mouse) {
-    let (x, y) = get_position(&mouse);
-    let x = x + MOVEMENT;
-    println!("Moving the mouse to the right");
-    mouse
-        .move_to(x, y)
-        .expect("Error moving mouse to the right");
+fn reset_inactivity() {
+    Command::new(RESET_IDLE_TIME_PATH)
+        .output()
+        .expect("failed to execute process");
 }
 
 async fn setup() {
-    let mouse = Mouse::new();
+    create_reset_bin().unwrap();
+
     loop {
-        for i in 1..=10 {
-            if i % 2 == 0 {
-                move_left(&mouse);
-            } else {
-                move_right(&mouse);
-            }
-            sleep(Duration::from_secs(60 * 10)).await;
-        }
+        reset_inactivity();
+        println!("Inactivity reset");
+        sleep(Duration::from_secs(65)).await;
     }
 }
 
