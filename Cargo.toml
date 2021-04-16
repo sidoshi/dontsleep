@@ -4,8 +4,12 @@ version = "0.1.0"
 authors = ["Siddharth Doshi <siddharth.doshi@freighthub.com>"]
 edition = "2018"
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+[lib]
+name = "slacker"
+
+[[bin]]
+name = "slacker"
 
 [dependencies]
-mouse-rs = "0.4"
+core-graphics = "0.22.0"
 tokio = { version = "1", features = ["full"] }
