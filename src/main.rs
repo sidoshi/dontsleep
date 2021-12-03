@@ -1,17 +1,16 @@
-use ctrlc;
-use std::sync::mpsc;
+use tokio::sync::broadcast;
 
 mod caffeinate;
 
 #[tokio::main]
 async fn main() {
-    let (tx, rx) = mpsc::channel::<()>();
+    let (tx, mut rx1) = broadcast::channel::<()>(10);
+    let mut rx2 = tx.subscribe();
 
-    ctrlc::set_handler(move || {
-        tx.send(()).expect("Error while sending interrupt signal");
-    })
-    .expect("Error setting up Signal handler");
+    tokio::spawn(async move {
+        tokio::signal::ctrl_c().await.unwrap();
+        tx.send(()).expect("Error sending terminate signal");
+    });
 
-    caffeinate::setup(&rx);
-    slacker::setup(&rx).await;
+    tokio::join!(caffeinate::setup(&mut rx1), slacker::setup(&mut rx2));
 }
