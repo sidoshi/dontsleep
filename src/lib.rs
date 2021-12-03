@@ -4,8 +4,8 @@ use core_graphics::{
     event_source::{CGEventSource, CGEventSourceStateID},
     geometry::CGPoint,
 };
+use std::sync::mpsc;
 use std::time::Duration;
-use tokio::time::sleep;
 
 const MOVEMENT: CGFloat = 1.0;
 
@@ -30,7 +30,7 @@ fn mouse_move(point: CGPoint) {
 /// System is kept active by slightly moving the mouse periodically.
 /// To check if this is working,
 /// install Quarts for python and run the script test.py
-pub async fn setup() {
+pub async fn setup(rx: &mpsc::Receiver<()>) {
     let five_minutes = Duration::from_secs(60 * 5);
 
     loop {
@@ -45,7 +45,9 @@ pub async fn setup() {
             }
 
             println!("Keeping the system active");
-            sleep(five_minutes).await;
+            if let Ok(_) = rx.recv_timeout(five_minutes) {
+                return;
+            }
         }
     }
 }
