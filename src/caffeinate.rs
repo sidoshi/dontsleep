@@ -3,6 +3,7 @@ use tokio::sync::broadcast;
 
 pub async fn setup(rx: &mut broadcast::Receiver<()>) {
     let mut child = Command::new("caffeinate")
+        .arg("-d")
         .spawn()
         .expect("Error spawning caffeinate");
 
