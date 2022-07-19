@@ -1,7 +1,7 @@
 use std::process::Command;
 use tokio::sync::broadcast;
 
-pub async fn setup(rx: &mut broadcast::Receiver<()>) {
+pub async fn setup(mut rx: broadcast::Receiver<()>) {
     let mut child = Command::new("caffeinate")
         .arg("-d")
         .spawn()

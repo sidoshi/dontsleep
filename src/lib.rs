@@ -30,7 +30,7 @@ fn mouse_move(point: CGPoint) {
 /// System is kept active by slightly moving the mouse periodically.
 /// To check if this is working,
 /// install Quarts for python and run the script test.py
-pub async fn setup(rx: &mut broadcast::Receiver<()>) {
+pub async fn setup(mut rx: broadcast::Receiver<()>) {
     let five_minutes = Duration::from_secs(60 * 5);
 
     loop {
