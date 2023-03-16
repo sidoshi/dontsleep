@@ -1,14 +1,14 @@
 [package]
-name = "slacker"
+name = "dontsleep"
 version = "0.1.0"
-authors = ["Siddharth Doshi <siddharth.doshi@freighthub.com>"]
+authors = ["Siddharth Doshi <sidoshi510@gmail.com>"]
 edition = "2018"
 
 [lib]
-name = "slacker"
+name = "dontsleep"
 
 [[bin]]
-name = "slacker"
+name = "dontsleep"
 
 [dependencies]
 core-graphics = "0.22.0"

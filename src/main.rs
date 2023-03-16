@@ -12,5 +12,5 @@ async fn main() {
         tx.send(()).expect("Error sending terminate signal");
     });
 
-    tokio::join!(caffeinate::setup(rx1), slacker::setup(rx2));
+    tokio::join!(caffeinate::setup(rx1), dontsleep::setup(rx2));
 }

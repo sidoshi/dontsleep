@@ -48,7 +48,7 @@ pub async fn setup(mut rx: broadcast::Receiver<()>) {
 
             tokio::select! {
                 _ = rx.recv() => {
-                    println!("Killng slacker");
+                    println!("Killng dontsleep");
                     return;
                 }
                 _ = sleep(five_minutes) =>  {
